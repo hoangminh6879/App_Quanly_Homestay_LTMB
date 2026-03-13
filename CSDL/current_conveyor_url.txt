@@ -1,0 +1,56 @@
+====================================
+  CONVEYOR URL - CẬP NHẬT HÀNG NGÀY
+====================================
+
+📅 Ngày: 15/10/2025
+🔗 Conveyor URL: https://fastbrassbag1.conveyor.cloud
+✅ Trạng thái: Đã test - Hoạt động tốt
+
+------------------------------------
+HƯỚNG DẪN SỬ DỤNG:
+------------------------------------
+
+1. MỖI NGÀY trước khi dev Flutter:
+   - Mở Visual Studio 2022
+   - Mở D:\Nhom1\Nhom1.sln
+   - Nhấn F5 để chạy server
+   - Tìm URL mới trong Output → Conveyor
+   - CẬP NHẬT URL mới vào file này
+
+2. Copy URL mới vào Flutter:
+   - Mở: lib/services/api_service.dart
+   - Thay đổi:
+     static const String baseUrl = 'https://[URL-MỚI]';
+
+3. Test xem server hoạt động:
+   - Mở browser trên điện thoại
+   - Truy cập: [URL]/api/homestays?page=1&pageSize=2
+   - Phải thấy JSON data
+
+------------------------------------
+LỊCH SỬ URL:
+------------------------------------
+
+15/10/2025: https://fastbrassbag1.conveyor.cloud
+[Ngày tiếp theo sẽ cập nhật ở đây]
+
+------------------------------------
+ENDPOINTS QUAN TRỌNG:
+------------------------------------
+
+✅ GET  /api/homestays - Danh sách homestays
+✅ POST /api/auth/login - Đăng nhập
+✅ GET  /api/bookings/my-bookings - Bookings của user
+✅ GET  /swagger/v1/swagger.json - API documentation
+
+------------------------------------
+TEST NHANH:
+------------------------------------
+
+curl https://[URL]/api/homestays?page=1&pageSize=2
+
+Nếu thấy JSON → Server OK! 🎉
+
+====================================
+  LƯU Ý: URL thay đổi mỗi ngày!
+====================================

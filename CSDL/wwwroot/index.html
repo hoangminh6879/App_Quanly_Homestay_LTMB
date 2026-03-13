@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homestay Đom Đóm Dream - API Backend</title>
+    <link rel="icon" type="image/png" href="/images/admin/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Hero Slideshow Section */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-slideshow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: white;
+            padding: 10px;
+            object-fit: contain;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .btn-hero {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary-hero {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .btn-primary-hero:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary-hero {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary-hero:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        /* Navigation Arrows */
+        .slideshow-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            transform: translateY(-50%);
+            z-index: 3;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.3);
+            border: 2px solid white;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn:hover {
+            background: white;
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        /* Thumbnail Indicators */
+        .slideshow-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .thumbnail-indicators {
+            display: flex;
+            gap: 10px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .thumbnail.active {
+            border-color: white;
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .thumbnail:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            .thumbnail {
+                width: 60px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section with Slideshow -->
+    <section class="hero-section">
+        <!-- Image Slideshow Background -->
+        <div class="hero-slideshow">
+            <div class="slide active" style="background-image: url('/images/Tudong/1.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/2.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/3.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/4.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/5.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/6.jpg')"></div>
+            <div class="slide" style="background-image: url('/images/Tudong/7.jpg')"></div>
+        </div>
+
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+
+        <!-- Navigation Arrows -->
+        <div class="slideshow-nav">
+            <button class="nav-btn" id="prevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="nav-btn" id="nextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="logo-container">
+                <img src="/images/admin/logo.png" alt="Homestay Logo" class="logo">
+            </div>
+            <h1 class="hero-title">
+                <i class="fas fa-home"></i> Homestay API
+            </h1>
+            <p class="hero-subtitle">
+                Hệ thống Backend cho ứng dụng đặt phòng Homestay
+            </p>
+            <div class="hero-buttons">
+                <a href="/swagger" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-book"></i> API Documentation
+                </a>
+                <a href="/test-image" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-images"></i> Test Images
+                </a>
+            </div>
+        </div>
+
+        <!-- Thumbnail Indicators -->
+        <div class="slideshow-controls">
+            <div class="thumbnail-indicators">
+                <div class="thumbnail active" data-slide="0" style="background-image: url('/images/Tudong/1.jpg')"></div>
+                <div class="thumbnail" data-slide="1" style="background-image: url('/images/Tudong/2.jpg')"></div>
+                <div class="thumbnail" data-slide="2" style="background-image: url('/images/Tudong/3.jpg')"></div>
+                <div class="thumbnail" data-slide="3" style="background-image: url('/images/Tudong/4.jpg')"></div>
+                <div class="thumbnail" data-slide="4" style="background-image: url('/images/Tudong/5.jpg')"></div>
+                <div class="thumbnail" data-slide="5" style="background-image: url('/images/Tudong/6.jpg')"></div>
+                <div class="thumbnail" data-slide="6" style="background-image: url('/images/Tudong/7.jpg')"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-rocket"></i> Tính Năng API
+                </h2>
+                <p class="lead text-muted">RESTful API mạnh mẽ cho ứng dụng Homestay của bạn</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3>Xác Thực JWT</h3>
+                        <p class="text-muted">Bảo mật cao với JWT Bearer Token, hỗ trợ đăng ký, đăng nhập, quản lý phiên</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3>Quản Lý Homestay</h3>
+                        <p class="text-muted">CRUD đầy đủ cho homestay, tìm kiếm nâng cao, filter theo địa điểm, giá</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Đặt Phòng</h3>
+                        <p class="text-muted">Hệ thống booking thông minh, kiểm tra availability, quản lý trạng thái</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h3>Thanh Toán</h3>
+                        <p class="text-muted">Tích hợp payment gateway, lịch sử giao dịch, refund tự động</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Đánh Giá</h3>
+                        <p class="text-muted">Hệ thống review và rating, giúp người dùng đưa ra quyết định tốt hơn</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3>Thông Báo</h3>
+                        <p class="text-muted">Push notifications real-time cho các sự kiện quan trọng</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="/swagger" class="btn btn-primary btn-lg px-5 py-3" style="border-radius: 50px;">
+                    <i class="fas fa-code me-2"></i> Khám Phá API Docs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-heart text-danger"></i> 
+                Homestay API v1.0 - Powered by .NET 8 & Flutter
+            </p>
+            <p class="mb-0 small text-muted">
+                © 2025 Đom Đóm Dream. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Slideshow functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const totalSlides = slides.length;
+        let autoplayInterval;
+
+        function showSlide(index) {
+            // Remove active class from all
+            slides.forEach(slide => slide.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+
+            // Wrap around
+            if (index >= totalSlides) currentSlide = 0;
+            else if (index < 0) currentSlide = totalSlides - 1;
+            else currentSlide = index;
+
+            // Add active class
+            slides[currentSlide].classList.add('active');
+            thumbnails[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Auto play
+        function startAutoplay() {
+            autoplayInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        }
+
+        function stopAutoplay() {
+            clearInterval(autoplayInterval);
+        }
+
+        // Event listeners
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            nextSlide();
+            stopAutoplay();
+            startAutoplay(); // Restart autoplay
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            prevSlide();
+            stopAutoplay();
+            startAutoplay();
+        });
+
+        // Thumbnail clicks
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('click', () => {
+                showSlide(index);
+                stopAutoplay();
+                startAutoplay();
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // Start autoplay on load
+        startAutoplay();
+
+        // Pause on hover
+        document.querySelector('.hero-section').addEventListener('mouseenter', stopAutoplay);
+        document.querySelector('.hero-section').addEventListener('mouseleave', startAutoplay);
+    </script>
+</body>
+</html>

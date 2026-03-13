@@ -1,0 +1,38 @@
+@model List<Nhom1.DTOs.PromotionDto>
+@{
+    ViewData["Title"] = "Quản lý khuyến mãi";
+}
+<h1>Quản lý khuyến mãi</h1>
+<p><a class="btn btn-primary" href="/admin/promotions/create">Tạo khuyến mãi mới</a></p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Used / Limit</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var p in Model)
+    {
+        <tr>
+            <td>@p.Id</td>
+            <td>@p.Code</td>
+            <td>@p.Name</td>
+            <td>@p.Type</td>
+            <td>@p.Value</td>
+            <td>@p.UsedCount / @(p.UsageLimit?.ToString() ?? "-" )</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="/admin/promotions/edit/@p.Id">Sửa</a>
+                <form method="post" action="/admin/promotions/delete/@p.Id" style="display:inline" onsubmit="return confirm('Xóa khuyến mãi?')">
+                    <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
